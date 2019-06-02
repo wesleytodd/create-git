@@ -62,7 +62,7 @@ module.exports = async function createGit (input = {}) {
 
   // Merge custom rules
   if (opts.additionalRules && opts.additionalRules.length) {
-    ignoreRules.patterns = ignoreRules.patterns.concat(opts.additionalRules)
+    ignoreRules.concat(opts.additionalRules)
   }
 
   // Create directory and init git
