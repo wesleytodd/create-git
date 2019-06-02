@@ -55,7 +55,7 @@ const createGit = require('create-git')
     ignoreExisting: false,
     initialCommitMessage: '',
     remoteOrigin: '',
-    ignoreTemplates: 'Node.gitignore'
+    ignoreTemplates: ['Node.gitignore']
   })
 })()
 ```
