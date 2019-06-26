@@ -73,10 +73,33 @@ describe('create git', () => {
       initialCommitMessage: 'testing'
     })
 
-    const out = await shell.exec(`git --no-pager log --oneline`, {
+    const out = await shell.exec('git --no-pager log --oneline', {
       cwd: TMP_DIR,
       silent: true
     })
     assert(out.stdout.includes('testing'))
+  })
+
+  it('should get remote origin default from package.json', async () => {
+    // Write existing file
+    await fs.ensureDir(TMP_DIR)
+    await fs.writeJson(path.join(TMP_DIR, 'package.json'), {
+      repository: {
+        type: 'git',
+        url: 'git@github.com:wesleytodd/create-git.git'
+      }
+    })
+
+    await createGit({
+      directory: TMP_DIR,
+      noPrompt: true,
+      silent: true
+    })
+
+    const out = await shell.exec('git remote -v', {
+      cwd: TMP_DIR,
+      silent: true
+    })
+    assert(out.stdout.includes('git@github.com:wesleytodd/create-git.git'))
   })
 })

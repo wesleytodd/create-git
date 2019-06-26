@@ -32,12 +32,21 @@ module.exports = async function createGit (input = {}) {
   // Load existing .gitignore
   let existingIgnoreStr
   let existingIgnore
-  if (opts.ignoreExisting) {
+  if (!opts.ignoreExisting) {
     try {
       existingIgnoreStr = await fs.readFile(gitignorePath, 'utf8')
       existingIgnore = parseIgnore.parse(existingIgnoreStr)
     } catch (e) {
       // ignore
+    }
+  }
+
+  // Load git url from package.json
+  const pkgJsonPath = path.join(opts.directory, 'package.json')
+  if (!opts.remoteOrigin && await fs.pathExists(pkgJsonPath)) {
+    const pkg = await fs.readJson(pkgJsonPath, { throws: false })
+    if (pkg && pkg.repository && pkg.repository.type === 'git' && pkg.repository.url) {
+      opts.remoteOrigin = pkg.repository.url
     }
   }
 
