@@ -15,7 +15,7 @@ describe('create git', () => {
   it('should initialize a git repo', async () => {
     await createGit({
       directory: TMP_DIR,
-      noPrompt: true,
+      prompt: false,
       silent: true,
       remoteOrigin: 'git@github.com:wesleytodd/create-git.git'
     })
@@ -37,8 +37,9 @@ describe('create git', () => {
 
     await createGit({
       directory: TMP_DIR,
-      noPrompt: true,
-      silent: true
+      prompt: false,
+      silent: true,
+      ignoreTemplates: []
     })
 
     assert(fs.pathExists(path.join(TMP_DIR, '.gitignore')))
@@ -51,7 +52,7 @@ describe('create git', () => {
 
     await createGit({
       directory: TMP_DIR,
-      noPrompt: true,
+      prompt: false,
       silent: true,
       ignoreTemplates: [
         'Node.gitignore'
@@ -68,7 +69,7 @@ describe('create git', () => {
 
     await createGit({
       directory: TMP_DIR,
-      noPrompt: true,
+      prompt: false,
       silent: true,
       initialCommitMessage: 'testing'
     })
@@ -92,7 +93,7 @@ describe('create git', () => {
 
     await createGit({
       directory: TMP_DIR,
-      noPrompt: true,
+      prompt: false,
       silent: true
     })
 

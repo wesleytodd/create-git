@@ -1,30 +1,88 @@
 'use strict'
+const create = require('@pkgjs/create')
 const path = require('path')
 const axios = require('axios')
 const shell = require('shelljs')
 const fs = require('fs-extra')
 const parseIgnore = require('./lib/ignore')
-const prompt = require('./lib/prompts')
+const arrayFromList = require('./lib/array-from-list')
 
-module.exports = async function createGit (input = {}) {
-  // We need this for the defaults
-  const cwd = process.cwd()
-
-  // Removed undefined values from input and default some options
-  const options = Object.keys(input).reduce((o, key) => {
-    if (typeof input[key] !== 'undefined') {
-      o[key] = input[key]
+module.exports = create({
+  commandDescription: 'Initalize a git repo',
+  options: {
+    initialCommitMessage: {
+      type: 'string',
+      flag: {
+        key: 'initial-commit-message',
+        alias: 'm'
+      },
+      prompt: {
+        message: 'Initial commit message (leave empty for no commit):'
+      }
+    },
+    remoteOrigin: {
+      type: 'string',
+      flag: {
+        key: 'remote-origin',
+        alias: 'o'
+      },
+      prompt: {
+        message: 'Set remote origin:'
+      }
+    },
+    ignoreTemplates: {
+      default: ['Node.gitignore'],
+      flag: {
+        key: 'ignore-templates',
+        alias: 't'
+      },
+      prompt: {
+        message: 'Ignore templates',
+        type: 'checkbox',
+        choices: [{
+          name: 'Node',
+          value: 'Node.gitignore'
+        }, {
+          name: 'Sass',
+          value: 'Sass.gitignore'
+        }, {
+          name: 'Vue',
+          value: 'community/JavaScript/Vue.gitignore'
+        }, {
+          name: 'MacOs',
+          value: 'Global/macOS.gitignore'
+        }, {
+          name: 'Linux',
+          value: 'Global/Linux.gitignore'
+        }, {
+          name: 'Windows',
+          value: 'Global/Windows.gitignore'
+        }, {
+          name: 'Vim',
+          value: 'Global/Vim.gitignore'
+        }, {
+          name: 'Emacs',
+          value: 'Global/Emacs.gitignore'
+        }]
+      },
+      additionalRules: {
+        type: 'string',
+        prompt: {
+          message: 'Additional git ignores:',
+          filter: arrayFromList
+        }
+      },
+      ignoreExisting: {
+        type: 'boolean',
+        prompt: false,
+        flag: {
+          key: 'ignore-existing'
+        }
+      }
     }
-    return o
-  }, {
-    extended: false
-  })
-
-  // Defaults
-  let opts = Object.assign({
-    directory: cwd,
-    silent: false
-  }, options)
+  }
+}, async function creategit (initOpts) {
+  const opts = await initOpts()
 
   // Path to the gititnore
   const gitignorePath = path.join(opts.directory, '.gitignore')
@@ -32,7 +90,7 @@ module.exports = async function createGit (input = {}) {
   // Load existing .gitignore
   let existingIgnoreStr
   let existingIgnore
-  if (!opts.ignoreExisting) {
+  if (opts.ignoreExisting !== false) {
     try {
       existingIgnoreStr = await fs.readFile(gitignorePath, 'utf8')
       existingIgnore = parseIgnore.parse(existingIgnoreStr)
@@ -49,9 +107,6 @@ module.exports = async function createGit (input = {}) {
       opts.remoteOrigin = pkg.repository.url
     }
   }
-
-  // prompt input
-  opts = await prompt(opts, options)
 
   // Merge existing ignore with new ignore
   let ignoreRules = existingIgnore || parseIgnore.parse('')
@@ -101,4 +156,4 @@ module.exports = async function createGit (input = {}) {
       silent: opts.silent
     })
   }
-}
+})

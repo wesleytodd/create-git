@@ -1,33 +1,3 @@
 #!/usr/bin/env node
 'use strict'
-// vim: set ft=javascript:ts=2:sw=2
-const program = require('commander')
-const pkg = require('../package.json')
-const createGit = require('../')
-const arrayFromList = require('../lib/array-from-list')
-
-let directory
-program
-  .version(pkg.version)
-  .arguments('<directory>')
-  .action((dir) => directory = dir)
-  .option('--ignore-existing', 'Ignore existing package.json')
-  .option('--silent', 'Surpress output')
-  .option('--no-prompt', 'Skip prompts and just use input options')
-  .option('-m --initial-commit-message', 'The initial commit message')
-  .option('-o --origin', 'Set the remote origin')
-  .option('-t --templates', 'Ignor templates to load')
-  .parse(process.argv)
-
-if (program.templates) {
-  program.templates = arrayFromList(program.templates)
-}
-
-// Run the process
-createGit({
-  directory: directory,
-  ignoreExisting: program.ignoreExisting,
-  silent: program.silent,
-  remoteOrigin: program.origin,
-  ignoreTemplates: program.templates
-})
+require('../').cli(process.argv.slice(2))
