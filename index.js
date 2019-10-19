@@ -1,7 +1,7 @@
 'use strict'
 const create = require('@pkgjs/create')
 const path = require('path')
-const axios = require('axios')
+const got = require('got')
 const shell = require('shelljs')
 const fs = require('fs-extra')
 const parseIgnore = require('./lib/ignore')
@@ -115,10 +115,10 @@ module.exports = create({
   for (var i in opts.ignoreTemplates) {
     try {
       const url = `https://raw.githubusercontent.com/github/gitignore/master/${opts.ignoreTemplates[i]}`
-      const resp = await axios.get(url)
+      const resp = await got(url)
 
       // Join sections
-      ignoreRules.concat(resp.data)
+      ignoreRules.concat(resp.body)
     } catch (e) {
       console.error('Unable to load template', e)
     }
