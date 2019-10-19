@@ -4,8 +4,8 @@ const path = require('path')
 const got = require('got')
 const shell = require('shelljs')
 const fs = require('fs-extra')
+const parseList = require('safe-parse-list')
 const parseIgnore = require('./lib/ignore')
-const arrayFromList = require('./lib/array-from-list')
 
 module.exports = create({
   commandDescription: 'Initalize a git repo',
@@ -69,7 +69,7 @@ module.exports = create({
         type: 'string',
         prompt: {
           message: 'Additional git ignores:',
-          filter: arrayFromList
+          filter: parseList
         }
       },
       ignoreExisting: {
