@@ -23,7 +23,7 @@ describe('create git', () => {
     assert(await fs.pathExists(path.join(TMP_DIR, '.git')))
     assert(fs.pathExists(path.join(TMP_DIR, '.gitignore')))
 
-    const out = await shell.exec(`git remote -v`, {
+    const out = await shell.exec('git remote -v', {
       cwd: TMP_DIR,
       silent: true
     })

@@ -109,10 +109,10 @@ module.exports = create({
   }
 
   // Merge existing ignore with new ignore
-  let ignoreRules = existingIgnore || parseIgnore.parse('')
+  const ignoreRules = existingIgnore || parseIgnore.parse('')
 
   // Load templates
-  for (var i in opts.ignoreTemplates) {
+  for (const i in opts.ignoreTemplates) {
     try {
       const url = `https://raw.githubusercontent.com/github/gitignore/master/${opts.ignoreTemplates[i]}`
       const resp = await got(url)
@@ -131,7 +131,7 @@ module.exports = create({
 
   // Create directory and init git
   await fs.ensureDir(path.join(opts.directory))
-  await shell.exec(`git init`, {
+  await shell.exec('git init', {
     cwd: opts.directory,
     silent: opts.silent
   })
@@ -147,7 +147,7 @@ module.exports = create({
   await fs.writeFile(gitignorePath, parseIgnore.stringify(ignoreRules))
 
   if (opts.initialCommitMessage) {
-    await shell.exec(`git add .`, {
+    await shell.exec('git add .', {
       cwd: opts.directory,
       silent: opts.silent
     })
