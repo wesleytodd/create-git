@@ -29,7 +29,7 @@
     "@pkgjs/create": "^0.2.0",
     "commander": "^2.19.0",
     "fs-extra": "^7.0.0",
-    "got": "^9.6.0",
+    "got": "^10.5.7",
     "inquirer": "^6.2.0",
     "parse-gitignore": "^1.0.1",
     "safe-parse-list": "0.0.1",
