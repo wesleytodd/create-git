@@ -6,6 +6,7 @@ const shell = require('shelljs')
 const fs = require('fs-extra')
 const parseList = require('safe-parse-list')
 const parseIgnore = require('./lib/ignore')
+const shellescape = require('shell-escape')
 
 module.exports = create({
   commandDescription: 'Initalize a git repo',
@@ -129,6 +130,12 @@ module.exports = create({
     ignoreRules.concat(opts.additionalRules)
   }
 
+  // Escape Bad Shell Arguments
+  let escapeShell = function(cmd) {
+    let arg = cmd.split(" ")
+    return shellescape(arg)
+  }
+
   // Create directory and init git
   await fs.ensureDir(path.join(opts.directory))
   await shell.exec('git init', {
@@ -137,7 +144,7 @@ module.exports = create({
   })
 
   if (opts.remoteOrigin) {
-    await shell.exec(`git remote add origin ${opts.remoteOrigin}`, {
+    await shell.exec(escapeShell(`git remote add origin ${opts.remoteOrigin}`), {
       cwd: opts.directory,
       silent: opts.silent
     })
@@ -151,7 +158,7 @@ module.exports = create({
       cwd: opts.directory,
       silent: opts.silent
     })
-    await shell.exec(`git commit -am "${opts.initialCommitMessage}"`, {
+    await shell.exec(escapeShell(`git commit -am "${opts.initialCommitMessage}"`), {
       cwd: opts.directory,
       silent: opts.silent
     })
