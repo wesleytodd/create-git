@@ -1,3 +1,4 @@
 node_modules
-test/fixtures/tmp
+test/tmp
 package-lock.json
+coverage
