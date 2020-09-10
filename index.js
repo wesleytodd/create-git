@@ -7,6 +7,8 @@ const opta = require('opta')
 const parseList = require('safe-parse-list')
 const fs = require('fs-extra')
 const got = require('got')
+const inquirer = require('inquirer')
+const { Loggerr } = require('loggerr')
 const parseIgnore = require('./lib/ignore')
 
 function initOpts () {
@@ -19,6 +21,20 @@ function initOpts () {
         flag: {
           alias: 'd',
           defaultDescription: 'process.cwd()'
+        }
+      },
+      silent: {
+        type: 'boolean',
+        prompt: false,
+        flag: {
+          conflicts: ['verbose']
+        }
+      },
+      verbose: {
+        type: 'boolean',
+        prompt: false,
+        flag: {
+          conflicts: ['silent']
         }
       },
       primaryBranch: {
@@ -144,6 +160,11 @@ async function main (input, _opts = {}) {
   options.overrides(input)
   let opts = options.values()
 
+  const log = _opts.logger || new Loggerr({
+    level: (opts.silent && 'silent') || (opts.verbose && 'debug') || 'info',
+    formatter: 'cli'
+  })
+
   const gitignorePath = path.join(opts.cwd, '.gitignore')
 
   // Load existing .gitignore
@@ -179,17 +200,19 @@ async function main (input, _opts = {}) {
     promptor: _opts.promptor
   })()
   opts = options.values()
+  log.debug('Options:', opts)
 
   // Load templates
   for (const i in opts.ignoreTemplates) {
     try {
       const url = `https://raw.githubusercontent.com/github/gitignore/master/${opts.ignoreTemplates[i]}`
+      log.debug(`Loading ignore template: ${url}`)
       const resp = await got(url)
 
       // Join sections
       ignoreRules.concat(resp.body)
     } catch (e) {
-      console.error('Unable to load template', e)
+      log.error('Unable to load template', e)
     }
   }
 
@@ -199,28 +222,49 @@ async function main (input, _opts = {}) {
   }
 
   // Create directory and init git
+  log.info('Initalizing repo')
   await fs.ensureDir(opts.cwd)
-  await git(['init'], { cwd: opts.cwd })
+  await git(['init'], { cwd: opts.cwd, log })
 
   // Switch to primary branch
-  const currentBranch = (await git(['branch', '--show-current'], { cwd: opts.cwd })).stdout.trim()
+  const currentBranch = (await git(['branch', '--show-current'], { cwd: opts.cwd, log })).stdout.trim()
   if (currentBranch && currentBranch !== opts.primaryBranch) {
-    await git(['checkout', '-b', opts.primaryBranch], { cwd: opts.cwd })
+    log.info(`Checking out ${opts.primaryBranch}`)
+    await git(['checkout', '-b', opts.primaryBranch], { cwd: opts.cwd, log })
   }
 
   if (opts.remoteOrigin) {
     try {
+      log.info(`Adding remote origin ${opts.remoteOrigin}`)
       await git(['remote', 'add', 'origin', opts.remoteOrigin], {
-        cwd: opts.cwd
+        cwd: opts.cwd,
+        log
       })
     } catch (e) {
       // If remote already exists, test if it is the same, if so, move on, else throw
       if (e.stderr === 'fatal: remote origin already exists.\n') {
         const url = (await git(['remote', 'get-url', 'origin'], {
-          cwd: opts.cwd
+          cwd: opts.cwd,
+          log
         })).stdout.trim()
+
         if (url !== opts.remoteOrigin) {
-          throw new Error(`remote origin already exists and points somwhere else: ${url}`)
+          log.error(`remote origin already exists and points somwhere else: ${url}`)
+          const { shouldSwitch } = await inquirer.prompt([{
+            name: 'shouldSwitch',
+            message: `Would you like to switch to point to ${opts.remoteOrigin}?`,
+            type: 'confirm'
+          }])
+          if (shouldSwitch) {
+            await git(['remote', 'rm', 'origin'], {
+              cwd: opts.cwd,
+              log
+            })
+            await git(['remote', 'add', 'origin', opts.remoteOrigin], {
+              cwd: opts.cwd,
+              log
+            })
+          }
         }
       } else {
         throw e
@@ -229,26 +273,31 @@ async function main (input, _opts = {}) {
   }
 
   // Write gitignore
+  log.info('Writing .gitignore')
   await fs.writeFile(gitignorePath, parseIgnore.stringify(ignoreRules))
 
   if (opts.initialCommitMessage) {
+    log.info('Committing changes')
     if (opts.commitAll !== false) {
       await git(['add', '.'], {
-        cwd: opts.cwd
+        cwd: opts.cwd,
+        log
       })
     } else {
       await git(['add', gitignorePath], {
-        cwd: opts.cwd
+        cwd: opts.cwd,
+        log
       })
     }
     try {
       await git(['commit', '-m', opts.initialCommitMessage], {
-        cwd: opts.cwd
+        cwd: opts.cwd,
+        log
       })
     } catch (e) {
       if (e.stdout.includes('nothing to commit')) {
         // Ignore error, but log
-        console.error('No changes to commit, skipping commit')
+        log.error('No changes to commit, skipping commit')
       } else {
         throw e
       }
@@ -256,6 +305,7 @@ async function main (input, _opts = {}) {
   }
 
   if (opts.push !== false) {
+    log.info('Pushing changes to remote origin')
     await git(['push'], {
       cwd: opts.cwd
     })
@@ -272,6 +322,7 @@ module.exports.cli = function () {
 module.exports.execGit = git
 async function git (args, opts) {
   try {
+    opts.log && opts.log.debug(`git ${args.join(' ')}`, { cwd: opts.cwd })
     const ret = await execFile('git', args, opts)
     return ret
   } catch (e) {

@@ -17,7 +17,8 @@ suite('create-git', () => {
     await fix.setup()
     await createGit({
       cwd: fix.TMP,
-      push: false
+      push: false,
+      silent: true
     }, {
       promptor: () => {
         return async (prompts) => {
@@ -46,7 +47,8 @@ suite('create-git', () => {
     await fix.setup()
     await createGit({
       cwd: fix.TMP,
-      push: false
+      push: false,
+      silent: true
     }, {
       promptor: () => {
         return async (prompts) => {
@@ -61,7 +63,8 @@ suite('create-git', () => {
 
     await createGit({
       cwd: fix.TMP,
-      push: false
+      push: false,
+      silent: true
     }, {
       promptor: () => {
         return async (prompts) => {
@@ -80,7 +83,8 @@ suite('create-git', () => {
     await fix.setup()
     await createGit({
       cwd: fix.TMP,
-      push: false
+      push: false,
+      silent: true
     }, {
       promptor: () => {
         return async (prompts) => {
@@ -105,7 +109,8 @@ suite('create-git', () => {
     })
     await createGit({
       cwd: fix.TMP,
-      push: false
+      push: false,
+      silent: true
     }, {
       promptor: () => {
         return async (prompts) => {
@@ -178,7 +183,10 @@ suite('create-git', () => {
       }
     })()
 
-    const o = opts.values()
+    const o = opts.values({
+      push: false,
+      silent: true
+    })
     assert.strictEqual(o.githubOrg, 'foo')
     assert.strictEqual(o.githubRepo, 'bar')
     assert.strictEqual(o.remoteOrigin, 'https://github.com/foo/bar')

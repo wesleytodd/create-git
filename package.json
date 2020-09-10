@@ -30,6 +30,8 @@
   "dependencies": {
     "fs-extra": "^7.0.0",
     "got": "^9.6.0",
+    "inquirer": "^7.3.3",
+    "loggerr": "^3.0.0-3",
     "opta": "0.0.5",
     "parse-gitignore": "^1.0.1",
     "safe-parse-list": "0.0.1"
