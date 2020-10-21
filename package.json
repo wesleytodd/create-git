@@ -4,7 +4,7 @@
   "description": "Initalize a git repository with some helpful extras",
   "author": "Wes Todd <wes@wesleytodd.com>",
   "bin": {
-    "create-git": "./bin/create-git"
+    "create-git": "bin/create-git"
   },
   "keywords": [
     "git",
@@ -32,7 +32,7 @@
     "got": "^9.6.0",
     "inquirer": "^7.3.3",
     "loggerr": "^3.0.0-3",
-    "opta": "0.0.5",
+    "opta": "^0.0.6",
     "parse-gitignore": "^1.0.1",
     "safe-parse-list": "0.0.1"
   },
