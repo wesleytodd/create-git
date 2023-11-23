@@ -24,6 +24,7 @@
     "test:watch": "mocha --watch",
     "test:debug": "mocha --insepct --inspect-brk --timeout=0",
     "test:cover": "c8 mocha",
+    "lint:fix": "standard --fix",
     "release": "npm t && standard-version && npm publish",
     "postpublish": "git push origin && git push origin --tags"
   },
@@ -40,7 +41,7 @@
     "c8": "^8.0.1",
     "fs-test-fixtures": "^0.1.4",
     "mocha": "^10.2.0",
-    "standard": "^14.3.1",
+    "standard": "^17.1.0",
     "standard-version": "^9.5.0"
   }
 }
