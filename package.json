@@ -29,7 +29,7 @@
     "postpublish": "git push origin && git push origin --tags"
   },
   "dependencies": {
-    "fs-extra": "^7.0.0",
+    "fs-extra": "^11.1.1",
     "got": "^9.6.0",
     "inquirer": "^7.3.3",
     "loggerr": "^3.0.0",
