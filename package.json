@@ -33,7 +33,7 @@
     "got": "^9.6.0",
     "inquirer": "^7.3.3",
     "loggerr": "^3.0.0",
-    "opta": "^0.0.6",
+    "opta": "^1.0.2",
     "parse-gitignore": "^1.0.1",
     "safe-parse-list": "0.0.1"
   },
