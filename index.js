@@ -242,7 +242,7 @@ async function main (input, _opts = {}) {
       })
     } catch (e) {
       // If remote already exists, test if it is the same, if so, move on, else throw
-      if (e.stderr === 'fatal: remote origin already exists.\n') {
+      if (e.stderr.includes('already exists')) {
         const url = (await git(['remote', 'get-url', 'origin'], {
           cwd: opts.cwd,
           log
