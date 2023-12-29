@@ -91,7 +91,7 @@ function initOpts () {
         },
         prompt: {
           group: 'switchtoRemoteOrigin',
-          message: (opts) => `Would you like to switch to point to ${opts.remoteOrigin}?`,
+          message: (ans, opts) => `Would you like to switch remote origin to point to ${opts.remoteOrigin}?`,
           type: 'confirm'
         }
       },
