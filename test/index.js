@@ -26,7 +26,7 @@ suite('create-git', () => {
             primaryBranch: 'master',
             initialCommitMessage: 'test initial commit',
             remoteOrigin: 'git@github.com:wesleytodd/create-git.git',
-            ignoreTemplates: prompts[3].default
+            ignoreTemplates: prompts.find((p) => p.name === 'ignoreTemplates').default
           }
         }
       }
@@ -53,9 +53,10 @@ suite('create-git', () => {
       promptor: () => {
         return async (prompts) => {
           return {
+            primaryBranch: prompts.find((p) => p.name === 'primaryBranch').default,
             initialCommitMessage: 'test initial commit',
             remoteOrigin: 'git@github.com:wesleytodd/create-git.git',
-            ignoreTemplates: prompts[2].default
+            ignoreTemplates: prompts.find((p) => p.name === 'ignoreTemplates').default
           }
         }
       }
@@ -69,10 +70,10 @@ suite('create-git', () => {
       promptor: () => {
         return async (prompts) => {
           return {
-            primaryBranch: prompts[0].default,
+            primaryBranch: prompts.find((p) => p.name === 'primaryBranch').default,
             initialCommitMessage: 'test initial commit',
             remoteOrigin: 'git@github.com:wesleytodd/create-git.git',
-            ignoreTemplates: prompts[3].default
+            ignoreTemplates: prompts.find((p) => p.name === 'ignoreTemplates').default
           }
         }
       }
@@ -89,10 +90,10 @@ suite('create-git', () => {
       promptor: () => {
         return async (prompts) => {
           return {
-            primaryBranch: prompts[0].default,
+            primaryBranch: prompts.find((p) => p.name === 'primaryBranch').default,
             initialCommitMessage: 'test initial commit',
             remoteOrigin: 'git@github.com:wesleytodd/create-git.git',
-            ignoreTemplates: prompts[3].default
+            ignoreTemplates: prompts.find((p) => p.name === 'ignoreTemplates').default
           }
         }
       }
@@ -114,13 +115,14 @@ suite('create-git', () => {
     }, {
       promptor: () => {
         return async (prompts) => {
-          assert.strictEqual(prompts[2].name, 'remoteOrigin')
-          assert.strictEqual(prompts[2].default, 'git@github.com:wesleytodd/create-git.git')
+          const remoteOriginPrompt = prompts.find((p) => p.name === 'remoteOrigin')
+          assert.strictEqual(remoteOriginPrompt.name, 'remoteOrigin')
+          assert.strictEqual(remoteOriginPrompt.default, 'git@github.com:wesleytodd/create-git.git')
           return {
-            primaryBranch: prompts[0].default,
+            primaryBranch: prompts.find((p) => p.name === 'primaryBranch').default,
             initialCommitMessage: 'test initial commit',
-            remoteOrigin: prompts[2].default,
-            ignoreTemplates: prompts[3].default
+            remoteOrigin: remoteOriginPrompt.default,
+            ignoreTemplates: prompts.find((p) => p.name === 'ignoreTemplates').default
           }
         }
       }
@@ -165,10 +167,11 @@ suite('create-git', () => {
     await opts.prompt({
       promptor: () => {
         return async (prompts) => {
+          const remoteOriginPrompt = prompts.find((p) => p.name === 'remoteOrigin')
           assert.strictEqual(prompts[0].name, 'githubOrg')
           assert.strictEqual(prompts[1].name, 'githubRepo')
-          assert.strictEqual(prompts[4].name, 'remoteOrigin')
-          assert.strictEqual(prompts[4].default({ githubOrg: 'foo', githubRepo: 'bar' }), 'https://github.com/foo/bar')
+          assert.strictEqual(remoteOriginPrompt.name, 'remoteOrigin')
+          assert.strictEqual(remoteOriginPrompt.default({ githubOrg: 'foo', githubRepo: 'bar' }), 'https://github.com/foo/bar')
           return prompts.reduce((o, p) => {
             if (!p.when) {
               return o
