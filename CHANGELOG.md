@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/wesleytodd/create-git/compare/v1.1.0...v1.2.0) (2023-12-29)
+
+
+### Features
+
+* use promptor for remote origin question ([a4e44b2](https://github.com/wesleytodd/create-git/commit/a4e44b2c4480ab21e0dbc77978837dd853010479))
+
 ## [1.1.0](https://github.com/wesleytodd/create-git/compare/v1.0.0...v1.1.0) (2023-12-29)
 
 
