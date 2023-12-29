@@ -281,7 +281,7 @@ async function main (input, _opts = {}) {
           log.error(`remote origin already exists and points somewhere else: ${url}`)
           const { switchToRemoteOrigin } = await options.prompt({
             promptor: _opts.promptor,
-            groups: ['switchToPrimaryBranch']
+            groups: ['switchToRemoteOrigin']
           })(opts)
           if (switchToRemoteOrigin) {
             await git(['remote', 'rm', 'origin'], {
