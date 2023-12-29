@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.2](https://github.com/wesleytodd/create-git/compare/v1.2.1...v1.2.2) (2023-12-29)
+
+
+### Bug Fixes
+
+* properly pass options for remote prompt ([a19caa0](https://github.com/wesleytodd/create-git/commit/a19caa0d93653ad0724f7fef6f31f58685aa4d79))
+
 ### [1.2.1](https://github.com/wesleytodd/create-git/compare/v1.2.0...v1.2.1) (2023-12-29)
 
 
