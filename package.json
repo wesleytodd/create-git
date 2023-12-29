@@ -1,6 +1,6 @@
 {
   "name": "create-git",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Initalize a git repository with some helpful extras",
   "author": "Wes Todd <wes@wesleytodd.com>",
   "bin": {

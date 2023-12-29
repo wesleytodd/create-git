@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/wesleytodd/create-git/compare/v1.0.0...v1.1.0) (2023-12-29)
+
+
+### Features
+
+* add switchToPrimaryBranch and fix related behaviors ([4476f4c](https://github.com/wesleytodd/create-git/commit/4476f4ceac2d4b4498469ba1cabb5b98e7f7dfdb))
+
 ## [1.0.0](https://github.com/wesleytodd/create-git/compare/v0.1.0...v1.0.0) (2023-11-23)
 
 
