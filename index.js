@@ -50,6 +50,18 @@ function initOpts () {
           default: 'main'
         }
       },
+      switchToPrimaryBranch: {
+        description: 'Switch to primary branch',
+        type: 'string',
+        flag: {
+          key: 'switch-to-primary-branch'
+        },
+        prompt: {
+          group: 'switchToPrimaryBranch',
+          message: 'Switch to primary branch before commit?',
+          default: true
+        }
+      },
       initialCommitMessage: {
         description: 'Message for initial commit',
         type: 'string',
@@ -224,13 +236,19 @@ async function main (input, _opts = {}) {
   // Create directory and init git
   log.info('Initalizing repo')
   await fs.ensureDir(opts.cwd)
-  await git(['init'], { cwd: opts.cwd, log })
+  await git(['init', '-b', opts.primaryBranch], { cwd: opts.cwd, log })
 
   // Switch to primary branch
   const currentBranch = (await git(['branch', '--show-current'], { cwd: opts.cwd, log })).stdout.trim()
   if (currentBranch && currentBranch !== opts.primaryBranch) {
-    log.info(`Checking out ${opts.primaryBranch}`)
-    await git(['checkout', '-b', opts.primaryBranch], { cwd: opts.cwd, log })
+    const { switchToPrimaryBranch } = await options.prompt({
+      promptor: _opts.promptor,
+      groups: ['switchToPrimaryBranch']
+    })()
+    if (switchToPrimaryBranch) {
+      log.info(`Checking out ${opts.primaryBranch}`)
+      await git(['checkout', '-b', opts.primaryBranch], { cwd: opts.cwd, log })
+    }
   }
 
   if (opts.remoteOrigin) {
@@ -249,7 +267,7 @@ async function main (input, _opts = {}) {
         })).stdout.trim()
 
         if (url !== opts.remoteOrigin) {
-          log.error(`remote origin already exists and points somwhere else: ${url}`)
+          log.error(`remote origin already exists and points somewhere else: ${url}`)
           const { shouldSwitch } = await inquirer.prompt([{
             name: 'shouldSwitch',
             message: `Would you like to switch to point to ${opts.remoteOrigin}?`,
@@ -297,7 +315,7 @@ async function main (input, _opts = {}) {
     } catch (e) {
       if (e.stdout.includes('nothing to commit')) {
         // Ignore error, but log
-        log.error('No changes to commit, skipping commit')
+        log.info('No changes to commit, skipping commit')
       } else {
         throw e
       }
