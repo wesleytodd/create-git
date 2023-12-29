@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/wesleytodd/create-git/compare/v1.2.0...v1.2.1) (2023-12-29)
+
+
+### Bug Fixes
+
+* used wrong group in prompt ([aaf6404](https://github.com/wesleytodd/create-git/commit/aaf640425aa7ab7e984e29b2b9636f6979fe9ec3))
+
 ## [1.2.0](https://github.com/wesleytodd/create-git/compare/v1.1.0...v1.2.0) (2023-12-29)
 
 
