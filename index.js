@@ -7,7 +7,6 @@ const opta = require('opta')
 const parseList = require('safe-parse-list')
 const fs = require('fs-extra')
 const got = require('got')
-const inquirer = require('inquirer')
 const { Loggerr } = require('loggerr')
 const parseIgnore = require('./lib/ignore')
 
@@ -82,6 +81,18 @@ function initOpts () {
         },
         prompt: {
           message: 'Set remote origin:'
+        }
+      },
+      switchToRemoteOrigin: {
+        description: 'Switch to remote origin if different',
+        type: 'boolean',
+        flag: {
+          key: 'switch-to-remote-origin'
+        },
+        prompt: {
+          group: 'switchtoRemoteOrigin',
+          message: (opts) => `Would you like to switch to point to ${opts.remoteOrigin}?`,
+          type: 'confirm'
         }
       },
       ignoreTemplates: {
@@ -268,12 +279,11 @@ async function main (input, _opts = {}) {
 
         if (url !== opts.remoteOrigin) {
           log.error(`remote origin already exists and points somewhere else: ${url}`)
-          const { shouldSwitch } = await inquirer.prompt([{
-            name: 'shouldSwitch',
-            message: `Would you like to switch to point to ${opts.remoteOrigin}?`,
-            type: 'confirm'
-          }])
-          if (shouldSwitch) {
+          const { switchToRemoteOrigin } = await options.prompt({
+            promptor: _opts.promptor,
+            groups: ['switchToPrimaryBranch']
+          })(opts)
+          if (switchToRemoteOrigin) {
             await git(['remote', 'rm', 'origin'], {
               cwd: opts.cwd,
               log
